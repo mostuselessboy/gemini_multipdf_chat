@@ -84,19 +84,19 @@ def user_input(user_question):
     print(response)
     return response
 
-
+pdf_docs = ["main.pdf"]
+# with st.spinner("Processing..."):
+raw_text = get_pdf_text(pdf_docs)
+text_chunks = get_text_chunks(raw_text)
+get_vector_store(text_chunks)
 def main():
     st.set_page_config(
-        page_title="Gemini PDF Chatbot",
+        page_title="Delhi Police Bot",
         page_icon="🤖"
     )
 
     # Use default PDF file "maindata.pdf"
-    pdf_docs = ["main.pdf"]
-    with st.spinner("Processing..."):
-        raw_text = get_pdf_text(pdf_docs)
-        text_chunks = get_text_chunks(raw_text)
-        get_vector_store(text_chunks)
+
 
     # Main content area for displaying chat messages
     st.title("👮Delhi Police ChatBot💬")
@@ -106,7 +106,7 @@ def main():
     # Initialize chat history if not already present
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
-            {"role": "assistant", "content": "You can now ask me a question about the maindata.pdf"}]
+            {"role": "assistant", "content": "Delhi Police Seva mein aapka swagat hai 🙏"}]
 
     # Display chat messages
     for message in st.session_state.messages:
