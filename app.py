@@ -100,7 +100,7 @@ def main():
 
     # Main content area for displaying chat messages
     st.title("👮Delhi Police ChatBot💬")
-    st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
+    st.write("<div style='text-align:center'>दिल्ली पुलिस आपकी सेवा में 🙏</div>")
     st.button('Clear Chat History', on_click=clear_chat_history)
 
     # Initialize chat history if not already present
