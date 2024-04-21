@@ -78,9 +78,11 @@ def user_input(user_question):
 
     chain = get_conversational_chain()
 
-    response = chain(
-        {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
-
+    try:
+        response = chain(
+            {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
+    except Exception:
+        return "We cannot answer this at this point"
     print(response)
     return response
 
