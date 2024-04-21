@@ -46,7 +46,7 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the provided context in hindi language, if the answer is not in
+    Answer the question from the provided context in points, also mention the heading from where you have picked the answer in context, if the answer is not in
     provided context just say, "Nahee Pta bhai", don't provide the wrong answer\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
@@ -56,7 +56,7 @@ def get_conversational_chain():
 
     model = ChatGoogleGenerativeAI(model="gemini-pro",
                                    client=genai,
-                                   temperature=0.3,
+                                   temperature=0.9,
                                    )
     prompt = PromptTemplate(template=prompt_template,
                             input_variables=["context", "question"])
