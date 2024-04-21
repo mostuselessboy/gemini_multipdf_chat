@@ -91,54 +91,48 @@ def main():
         page_icon="🤖"
     )
 
-    # Sidebar for uploading PDF files
-    with st.sidebar:
-        st.title("Delhi Police Bot ")
-        pdf_docs = st.file_uploader(
-            "Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
-        if st.button("Submit & Process"):
-            with st.spinner("Processing..."):
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done")
+    # Use default PDF file "maindata.pdf"
+    pdf_docs = ["main.pdf"]
+    with st.spinner("Processing..."):
+        raw_text = get_pdf_text(pdf_docs)
+        text_chunks = get_text_chunks(raw_text)
+        get_vector_store(text_chunks)
+        st.success("Done")
 
     # Main content area for displaying chat messages
     st.title("Chat with PDF files using Gemini🤖")
     st.write("Welcome to the chat!")
-    st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
+    st.button('Clear Chat History', on_click=clear_chat_history)
 
-    # Chat input
-    # Placeholder for chat messages
-
+    # Initialize chat history if not already present
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
-            {"role": "assistant", "content": "upload some pdfs and ask me a question"}]
+            {"role": "assistant", "content": "You can now ask me a question about the maindata.pdf"}]
 
+    # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.write(message["content"])
 
+    # Chat input
     if prompt := st.chat_input():
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.write(prompt)
 
-    # Display chat messages and bot response
+    # Display bot response
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 response = user_input(prompt)
-                placeholder = st.empty()
                 full_response = ''
                 for item in response['output_text']:
                     full_response += item
-                    placeholder.markdown(full_response)
-                placeholder.markdown(full_response)
-        if response is not None:
-            message = {"role": "assistant", "content": full_response}
-            st.session_state.messages.append(message)
+                st.write(full_response)
+        message = {"role": "assistant", "content": full_response}
+        st.session_state.messages.append(message)
 
 
 if __name__ == "__main__":
     main()
+
