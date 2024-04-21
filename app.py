@@ -107,7 +107,7 @@ def main():
         get_vector_store(text_chunks)
 
     # Main content area for displaying chat messages
-    st.image("https://upload.wikimedia.org/wikipedia/en/0/09/Delhi_Police_Logo.png", caption="", use_column_width=False)
+    st.image("https://files.oaiusercontent.com/file-qX3PVjJnqjkrvVYVwAxGFByS?se=2024-04-21T02%3A01%3A12Z&sp=r&sv=2021-08-06&sr=b&rscc=max-age%3D31536000%2C%20immutable&rscd=attachment%3B%20filename%3Da18b9ce3-81ef-4aa2-9394-c10545d89da3.webp&sig=UjE3wFBrQnlCAW9g3NnCSI1POhGzZ11YDe/EyWpsAlE%3D", caption="", use_column_width=False)
 
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
