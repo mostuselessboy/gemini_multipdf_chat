@@ -47,7 +47,7 @@ def get_vector_store(chunks):
 def get_conversational_chain():
     prompt_template = """
     Answer the question from the context in points by rephrasing it dont provide the answer as it is. GIVE ANSWER ONLY IN POINTS LEAVING A LINE BETWEEN EACH POINTS!, if the answer is not in
-    provided context just say, "Sorry We cannot process this information", don't provide the wrong answer\n\n
+    provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
 
