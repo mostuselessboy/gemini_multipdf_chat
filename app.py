@@ -99,6 +99,17 @@ def main():
         page_icon="🤖"
     )
 
+
+    hide_st_style = """
+                <style>
+                #MainMenu {visibility: hidden;}
+                footer {visibility: hidden;}
+                header {visibility: hidden;}
+                </style>
+                """
+    st.markdown(hide_st_style, unsafe_allow_html=True)
+
+
     # Use default PDF file "maindata.pdf"
     pdf_docs = ["main.pdf", "legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf"]
     with st.spinner("Processing..."):
