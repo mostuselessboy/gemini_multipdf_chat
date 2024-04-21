@@ -46,7 +46,7 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context, make sure to provide the necessary details only in Hindi language, if the answer is not in
+    Answer the question from the provided context in hindi language, if the answer is not in
     provided context just say, "Nahee Pta bhai", don't provide the wrong answer\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
