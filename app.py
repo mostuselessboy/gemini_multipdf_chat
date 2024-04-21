@@ -82,7 +82,7 @@ def user_input(user_question):
         response = chain(
             {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
     except Exception:
-        return ["We cannot answer this at this point"]
+        return {'output_text':["We cannot answer this at this point"]}
     print(response)
     return response
 
