@@ -105,7 +105,7 @@ def main():
                 #MainMenu {visibility: hidden;}
                 footer {visibility: hidden;}
                 header {visibility: hidden;}
-                .viewerBadge_link__qRIco{visibility: hidden !important;}
+                .viewerBadge_container__r5tak{display: none !important;}
                 </style>
                 """
     st.markdown(hide_st_style, unsafe_allow_html=True)
