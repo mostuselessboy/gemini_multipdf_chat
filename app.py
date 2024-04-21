@@ -97,11 +97,10 @@ def main():
         raw_text = get_pdf_text(pdf_docs)
         text_chunks = get_text_chunks(raw_text)
         get_vector_store(text_chunks)
-        st.success("Done")
 
     # Main content area for displaying chat messages
-    st.title("Chat with PDF files using Gemini🤖")
-    st.write("Welcome to the chat!")
+    st.title("👮Delhi Police ChatBot💬")
+    st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
 
     # Initialize chat history if not already present
