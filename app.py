@@ -46,8 +46,8 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the provided context in points by rephrasing it dont provide the answer as it is, if the answer is not in
-    provided context just say, "Nahee Pta bhai", don't provide the wrong answer\n\n
+    Answer the question from the context in points by rephrasing it dont provide the answer as it is. GIVE ANSWER ONLY IN POINTS!, if the answer is not in
+    provided context just say, "Sorry We cannot process this information", don't provide the wrong answer\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
 
