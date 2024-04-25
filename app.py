@@ -146,14 +146,12 @@ def main():
     with col1:
         if st.button("Sample Input 1"):
             sample_input = get_random_sample()
-            st.session_state.messages.append({"role": "user", "content": sample_input})
             with st.chat_message("user"):
                 st.write(sample_input)
 
     with col2:
         if st.button("Sample Input 2"):
             sample_input = get_random_sample()
-            st.session_state.messages.append({"role": "user", "content": sample_input})
             with st.chat_message("user"):
                 st.write(sample_input)
                 
