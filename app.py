@@ -12,10 +12,6 @@ from langchain_community.vectorstores import FAISS
 # Initialize GenAI
 genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
-# Global Variables
-EMBEDDINGS = None
-VECTOR_STORE = None
-
 def read_pdf(pdf_path):
     pdf_reader = PdfReader(pdf_path)
     return ' '.join([page.extract_text() for page in pdf_reader.pages])
@@ -28,21 +24,11 @@ def get_text_chunks(text):
         chunk_size=10000, chunk_overlap=1000)
     return splitter.split_text(text)
 
-def load_data():
-    global EMBEDDINGS, VECTOR_STORE
-    pdf_docs = ["glance.pdf","southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf"]
-    raw_text = get_pdf_text(pdf_docs)
-    text_chunks = get_text_chunks(raw_text)
-    
-    EMBEDDINGS = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    VECTOR_STORE = FAISS.from_texts(text_chunks, embedding=EMBEDDINGS)
-    VECTOR_STORE.save_local("faiss_index")
-
-def get_vector_store():
-    global VECTOR_STORE
-    if VECTOR_STORE is None:
-        VECTOR_STORE = FAISS.load_local("faiss_index", EMBEDDINGS, allow_dangerous_deserialization=True)
-    return VECTOR_STORE
+def get_vector_store(chunks):
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/embedding-001")  # type: ignore
+    vector_store = FAISS.from_texts(chunks, embedding=embeddings)
+    vector_store.save_local("faiss_index")
 
 def get_conversational_chain():
     prompt_template = """
@@ -72,9 +58,10 @@ def clear_chat_history():
         {"role": "assistant", "content": "upload some pdfs and ask me a question"}]
 
 def user_input(user_question):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")  # type: ignore
-    vector_store = get_vector_store()
-    docs = vector_store.similarity_search(user_question)
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/embedding-001")  # type: ignore
+    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) 
+    docs = new_db.similarity_search(user_question)
     chain = get_conversational_chain()
 
     try:
@@ -102,8 +89,6 @@ def main():
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
 
-    load_data()  # Load data at the start
-
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": "Delhi Police Seva mein aapka swagat hai 🙏"}]
 
@@ -119,6 +104,10 @@ def main():
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
+                pdf_docs = ["glance.pdf","southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf"]
+                raw_text = get_pdf_text(pdf_docs)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks)
                 response = user_input(prompt)
                 full_response = ''.join(response['output_text'])
                 st.write(full_response)
