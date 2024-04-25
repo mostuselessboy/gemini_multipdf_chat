@@ -4,17 +4,29 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import streamlit as st
 import google.generativeai as genai
-# from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
+import random
 # load_dotenv()
 # os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
 # read all pdf files and return text
+def get_random_sample():
+    sample_inputs = [
+        "What are the legal provisions related to cybercrimes?",
+        "How can I report a crime in Delhi?",
+        "What are the do's and don'ts during an emergency?",
+        "Tell me about the South District of Delhi.",
+        "How does the Delhi Police handle cases of defacement?",
+        "What is forced deployment in the context of Delhi Police?",
+        "Tell me about the latest e-campaign by Delhi Police.",
+        "Explain the concept of 'Glance' in the Delhi Police context."
+    ]
+    return random.choice(sample_inputs)
 
 
 def get_pdf_text(pdf_docs):
@@ -110,7 +122,6 @@ def main():
     st.markdown(hide_st_style, unsafe_allow_html=True)
 
 
-    # Use default PDF file "maindata.pdf"
 
 
     # Main content area for displaying chat messages
@@ -119,7 +130,17 @@ def main():
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
-
+    if st.button("Sample Input 1"):
+        sample_input = get_random_sample()
+        st.session_state.messages.append({"role": "user", "content": sample_input})
+        with st.chat_message("user"):
+            st.write(sample_input)
+    
+    if st.button("Sample Input 2"):
+        sample_input = get_random_sample()
+        st.session_state.messages.append({"role": "user", "content": sample_input})
+        with st.chat_message("user"):
+            st.write(sample_input)
     # Initialize chat history if not already present
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
