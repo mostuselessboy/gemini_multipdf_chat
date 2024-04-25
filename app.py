@@ -15,8 +15,6 @@ from dotenv import load_dotenv
 genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
 # read all pdf files and return text
-
-
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
@@ -26,8 +24,6 @@ def get_pdf_text(pdf_docs):
     return text
 
 # split text into chunks
-
-
 def get_text_chunks(text):
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=10000, chunk_overlap=1000)
@@ -35,14 +31,27 @@ def get_text_chunks(text):
     return chunks  # list of strings
 
 # get embeddings for each chunk
-
-
 def get_vector_store(chunks):
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001")  # type: ignore
     vector_store = FAISS.from_texts(chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
+# Global variables for storing text chunks and embeddings
+TEXT_CHUNKS = None
+VECTOR_STORE = None
+
+def load_pdf_data():
+    global TEXT_CHUNKS, VECTOR_STORE
+
+    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
+    raw_text = get_pdf_text(pdf_docs)
+    text_chunks = get_text_chunks(raw_text)
+    get_vector_store(text_chunks)
+
+    # Store text chunks and vector store globally
+    TEXT_CHUNKS = text_chunks
+    VECTOR_STORE = FAISS.load_local("faiss_index", allow_dangerous_deserialization=True)
 
 def get_conversational_chain():
     prompt_template = """
@@ -69,11 +78,9 @@ def get_conversational_chain():
     chain = load_qa_chain(llm=model, chain_type="stuff", prompt=prompt)
     return chain
 
-
 def clear_chat_history():
     st.session_state.messages = [
         {"role": "assistant", "content": "upload some pdfs and ask me a question"}]
-
 
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(
@@ -89,16 +96,19 @@ def user_input(user_question):
             {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
     except Exception:
         return {'output_text':["AI Cannot Answer these type of Questions for Safety Reason"]}
-    print(response)
-    return response
-
+    
+    full_response = ''
+    for item in response['output_text']:
+        full_response += item
+    return full_response
 
 def main():
+    load_pdf_data()
+
     st.set_page_config(
         page_title="Delhi Police Bot",
         page_icon="🤖"
     )
-
 
     hide_st_style = """
                 <style>
@@ -109,17 +119,6 @@ def main():
                 </style>
                 """
     st.markdown(hide_st_style, unsafe_allow_html=True)
-
-
-    # Use default PDF file "maindata.pdf"
-    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
-    with st.spinner("Processing..."):
-        raw_text = get_pdf_text(pdf_docs)
-        text_chunks = get_text_chunks(raw_text)
-        get_vector_store(text_chunks)
-
-    # Main content area for displaying chat messages
-    # st.image("botheader.png", caption="", use_column_width=True)
 
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
@@ -146,13 +145,9 @@ def main():
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 response = user_input(prompt)
-                full_response = ''
-                for item in response['output_text']:
-                    full_response += item
-                st.write(full_response)
-        message = {"role": "assistant", "content": full_response}
+                st.write(response)
+        message = {"role": "assistant", "content": response}
         st.session_state.messages.append(message)
 
 if __name__ == "__main__":
     main()
-
