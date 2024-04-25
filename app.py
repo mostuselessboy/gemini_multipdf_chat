@@ -44,7 +44,6 @@ def get_vector_store(chunks):
     vector_store.save_local("faiss_index")
 
 
-
 def get_conversational_chain():
     prompt_template = """
     Answer the question from the context in points by rephrasing it , dont provide the answer as it is. GIVE ANSWER ONLY IN POINTS LEAVING A LINE BETWEEN EACH POINTS!, if the answer is not in
@@ -56,7 +55,7 @@ def get_conversational_chain():
 
     model = ChatGoogleGenerativeAI(model="gemini-pro",
                                    client=genai,
-                                   temperature=0.5, 
+                                   temperature=0.2, 
                                     safety_settings={
                                     genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
                                     genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
@@ -112,7 +111,11 @@ def main():
 
 
     # Use default PDF file "maindata.pdf"
-
+    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
+    with st.spinner("Processing..."):
+        raw_text = get_pdf_text(pdf_docs)
+        text_chunks = get_text_chunks(raw_text)
+        get_vector_store(text_chunks)
 
     # Main content area for displaying chat messages
     # st.image("botheader.png", caption="", use_column_width=True)
@@ -140,12 +143,12 @@ def main():
     # Display bot response
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
-            # with st.spinner("Thinking..."):
-            response = user_input(prompt)
-            full_response = ''
-            for item in response['output_text']:
-                full_response += item
-            st.write(full_response)
+            with st.spinner("Thinking..."):
+                response = user_input(prompt)
+                full_response = ''
+                for item in response['output_text']:
+                    full_response += item
+                st.write(full_response)
         message = {"role": "assistant", "content": full_response}
         st.session_state.messages.append(message)
 
