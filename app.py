@@ -132,15 +132,15 @@ def main():
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
     question1 = get_random_sample()
-    if st.button("Try asking '" + question1+"'"):
-        st.session_state.messages.append({"role": "user", "content": question1})
-        with st.chat_message("user"):
-            st.write(question1)
+
     # Initialize chat history if not already present
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
             {"role": "assistant", "content": "Delhi Police Seva mein aapka swagat hai 🙏"}]
-
+    if st.button("Try asking '" + question1+"'"):
+        st.session_state.messages.append({"role": "user", "content": question1})
+        with st.chat_message("user"):
+            st.write(question1)
     # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
