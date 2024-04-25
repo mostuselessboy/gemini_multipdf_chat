@@ -84,7 +84,7 @@ def user_input(user_question):
     chain = get_conversational_chain()
 
     try:
-        response = chain(
+        response = chain.invoke(
             {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
     except Exception:
         return {'output_text':["AI Cannot Answer these type of Questions for Safety Reason"]}
