@@ -4,23 +4,17 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import streamlit as st
 import google.generativeai as genai
+# from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
-import random
 # load_dotenv()
 # os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
 # read all pdf files and return text
-def get_random_sample():
-    sample_input = [
-        "LoudSpeaker ki timings kya hai?",
-        "How many Vehicles allowed for Convassing?"
-    ]
-    return random.choice(sample_input)
 
 
 def get_pdf_text(pdf_docs):
@@ -125,22 +119,16 @@ def main():
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
-    question1 = get_random_sample()
 
     # Initialize chat history if not already present
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
             {"role": "assistant", "content": "Delhi Police Seva mein aapka swagat hai 🙏"}]
+
     # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.write(message["content"])
-
-    if st.button("Try asking '" + question1+"'"):
-        # st.session_state.messages.append({"role": "user", "content": question1})
-        st.session_state.chat_input = question1
-        # with st.chat_message("user"):
-        #     st.write(question1)
 
     # Chat input
     if prompt := st.chat_input():
