@@ -112,10 +112,10 @@ def main():
 
     # Use default PDF file "maindata.pdf"
     pdf_docs = ["southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
-    with st.spinner("Processing..."):
-        raw_text = get_pdf_text(pdf_docs)
-        text_chunks = get_text_chunks(raw_text)
-        get_vector_store(text_chunks)
+    # with st.spinner("Processing..."):
+    raw_text = get_pdf_text(pdf_docs)
+    text_chunks = get_text_chunks(raw_text)
+    get_vector_store(text_chunks)
 
     # Main content area for displaying chat messages
     # st.image("botheader.png", caption="", use_column_width=True)
@@ -143,12 +143,12 @@ def main():
     # Display bot response
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
-            # with st.spinner("Thinking..."):
-            response = user_input(prompt)
-            full_response = ''
-            for item in response['output_text']:
-                full_response += item
-            st.write(full_response)
+            with st.spinner("Thinking..."):
+                response = user_input(prompt)
+                full_response = ''
+                for item in response['output_text']:
+                    full_response += item
+                st.write(full_response)
         message = {"role": "assistant", "content": full_response}
         st.session_state.messages.append(message)
 
