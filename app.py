@@ -109,7 +109,7 @@ def main():
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
                 response = user_input(prompt)
-                full_response = ' '.join(response['output_text'])
+                full_response = ''.join(response['output_text'])
                 st.write(full_response)
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 
