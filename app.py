@@ -112,7 +112,7 @@ def main():
 
 
     # Use default PDF file "maindata.pdf"
-    pdf_docs = ["legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "southdistricteng.pdf", "defacement.pdf"]
+    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
     with st.spinner("Processing..."):
         raw_text = get_pdf_text(pdf_docs)
         text_chunks = get_text_chunks(raw_text)
