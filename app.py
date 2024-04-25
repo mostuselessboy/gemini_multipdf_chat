@@ -46,8 +46,8 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the context in points by rephrasing it. GIVE ANSWER ONLY IN POINTS LEAVING A LINE BETWEEN EACH POINTS!, if the answer is not in
-    provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer instead give them a similar question that can be found in the Context! \n\n
+    Answer the question from the context in points by rephrasing it. GIVE ANSWER ONLY IN POINTS if the answer is not in
+    provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer instead give them a similar question that can be found in the Context! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST!\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
     Answer:
@@ -140,7 +140,7 @@ def main():
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                pdf_docs = ["southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "glance.pdf", "defacement.pdf"]
+                pdf_docs = ["southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
                 # with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
