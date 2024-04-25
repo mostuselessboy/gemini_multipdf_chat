@@ -32,16 +32,16 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the context ONLY like a help desk person in points.
-    YOU CAN ANSWER OUT OF CONTEXT ALSO, BUT THEN PROVIDE YOUR SOURCE: IF ITS CONTEXT OR FROM SOME ANOTHER PLACE
+    Answer the question from the context ONLY like a help desk person.
+    If the answer is not in provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST! \n\n
     Context:\n {context}?\n
     Question: \n{question}\n
-    Perfect Matching Answer:
+    Answer:
     """
 
     model = ChatGoogleGenerativeAI(model="gemini-pro",
                                    client=genai,
-                                   temperature=0.8, 
+                                   temperature=0.5, 
                                    safety_settings={
                                        genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
                                        genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
@@ -104,7 +104,7 @@ def main():
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                pdf_docs = ["glance.pdf","ecampaign.pdf","southdistricteng.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf"]
+                pdf_docs = ["glance.pdf","southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf"]
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
