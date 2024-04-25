@@ -32,8 +32,8 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the context in points by rephrasing it. GIVE ANSWER ONLY IN POINTS if the answer is not in
-    provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST!ANSWER IN A FRIENDLY WAY LIKE A HELPER\n\n
+    Answer the question from the context ONLY.
+    If the answer is not in provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST!ANSWER IN A FRIENDLY WAY LIKE A HELPER\n\n
     Context:\n {context}?\n
     Question: \n{question}\n
     Answer:
