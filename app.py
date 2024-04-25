@@ -132,7 +132,7 @@ def main():
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
     question1 = get_random_sample()
-    if st.button(button):
+    if st.button(question1):
         # st.session_state.messages.append({"role": "user", "content": button})
         with st.chat_message("user"):
             st.write(question1)
