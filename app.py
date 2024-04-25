@@ -34,6 +34,7 @@ def get_conversational_chain():
     prompt_template = """
     Answer the question from the context ONLY like a help desk person in points.
     If the answer is not in provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST! \n\n
+    YOU CAN ANSWER OUT OF CONTEXT ALSO, BUT THEN PROVIDE YOUR SOURCE: IF ITS CONTEXT OR FROM SOME ANOTHER PLACE
     Context:\n {context}?\n
     Question: \n{question}\n
     Perfect Matching Answer:
