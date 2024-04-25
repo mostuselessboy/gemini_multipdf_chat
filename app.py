@@ -32,7 +32,7 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the context ONLY like a help desk person and always say "Jai Hind at the end with indian flag emoji"
+    Answer the question from the context ONLY like a help desk person and always say "Jai Hind at the end in next line saying thanks for asking"
     If the answer is not in provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST! \n\n
     Context:\n {context}?\n
     Question: \n{question}\n
