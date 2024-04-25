@@ -91,7 +91,11 @@ def user_input(user_question):
     print(response)
     return response
 
-
+pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
+with st.spinner("Processing..."):
+    raw_text = get_pdf_text(pdf_docs)
+    text_chunks = get_text_chunks(raw_text)
+    get_vector_store(text_chunks)
 def main():
     st.set_page_config(
         page_title="Delhi Police Bot",
@@ -111,11 +115,7 @@ def main():
 
 
     # Use default PDF file "maindata.pdf"
-    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
-    with st.spinner("Processing..."):
-        raw_text = get_pdf_text(pdf_docs)
-        text_chunks = get_text_chunks(raw_text)
-        get_vector_store(text_chunks)
+
 
     # Main content area for displaying chat messages
     # st.image("botheader.png", caption="", use_column_width=True)
