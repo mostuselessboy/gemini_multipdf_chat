@@ -1,48 +1,34 @@
 import os
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 import streamlit as st
 import google.generativeai as genai
-# from langchain.vectorstores import FAISS
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
-# load_dotenv()
-# os.getenv("GOOGLE_API_KEY")
+
+# Initialize GenAI
 genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
-# read all pdf files and return text
-
+def read_pdf(pdf_path):
+    pdf_reader = PdfReader(pdf_path)
+    return ' '.join([page.extract_text() for page in pdf_reader.pages])
 
 def get_pdf_text(pdf_docs):
-    text = ""
-    for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text += page.extract_text()
-    return text
-
-# split text into chunks
-
+    return ' '.join([read_pdf(pdf) for pdf in pdf_docs])
 
 def get_text_chunks(text):
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=10000, chunk_overlap=1000)
-    chunks = splitter.split_text(text)
-    return chunks  # list of strings
-
-# get embeddings for each chunk
-
+    return splitter.split_text(text)
 
 def get_vector_store(chunks):
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001")  # type: ignore
     vector_store = FAISS.from_texts(chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
-
 
 def get_conversational_chain():
     prompt_template = """
@@ -56,41 +42,33 @@ def get_conversational_chain():
     model = ChatGoogleGenerativeAI(model="gemini-pro",
                                    client=genai,
                                    temperature=0.8, 
-                                    safety_settings={
-                                    genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
-                                    genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
-                                    genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: genai.types.HarmBlockThreshold.BLOCK_NONE,
-                                    genai.types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: genai.types.HarmBlockThreshold.BLOCK_NONE
-                                    }
+                                   safety_settings={
+                                       genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+                                       genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+                                       genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: genai.types.HarmBlockThreshold.BLOCK_NONE,
+                                       genai.types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: genai.types.HarmBlockThreshold.BLOCK_NONE
+                                   }
                                    )
     prompt = PromptTemplate(template=prompt_template,
                             input_variables=["context", "question"])
-    chain = load_qa_chain(llm=model, chain_type="stuff", prompt=prompt)
-    return chain
-
+    return load_qa_chain(llm=model, chain_type="stuff", prompt=prompt)
 
 def clear_chat_history():
     st.session_state.messages = [
         {"role": "assistant", "content": "upload some pdfs and ask me a question"}]
 
-
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001")  # type: ignore
-
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) 
     docs = new_db.similarity_search(user_question)
-
     chain = get_conversational_chain()
 
     try:
-        response = chain.invoke(
-            {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
+        return chain.invoke(
+            {"input_documents": docs, "question": user_question}, return_only_outputs=True)
     except Exception:
         return {'output_text':["AI Cannot Answer these type of Questions for Safety Reason"]}
-    print(response)
-    return response
-
 
 def main():
     st.set_page_config(
@@ -98,62 +76,42 @@ def main():
         page_icon="🤖"
     )
 
-
-    hide_st_style = """
+    st.markdown("""
                 <style>
                 #MainMenu {visibility: hidden;}
                 footer {visibility: hidden;}
                 header {visibility: hidden;}
                 .viewerBadge_link__qRIco{display:none;}
                 </style>
-                """
-    st.markdown(hide_st_style, unsafe_allow_html=True)
-
-
-    # Use default PDF file "maindata.pdf"
-
-
-    # Main content area for displaying chat messages
-    # st.image("botheader.png", caption="", use_column_width=True)
+                """, unsafe_allow_html=True)
 
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
 
-    # Initialize chat history if not already present
-    if "messages" not in st.session_state.keys():
-        st.session_state.messages = [
-            {"role": "assistant", "content": "Delhi Police Seva mein aapka swagat hai 🙏"}]
+    if "messages" not in st.session_state:
+        st.session_state.messages = [{"role": "assistant", "content": "Delhi Police Seva mein aapka swagat hai 🙏"}]
 
-    # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.write(message["content"])
 
-    # Chat input
     if prompt := st.chat_input():
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.write(prompt)
 
-    # Display bot response
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 pdf_docs = ["glance.pdf","southdistricteng.pdf","ecampaign.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf"]
-                # with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
                 response = user_input(prompt)
-                full_response = ''
-                for item in response['output_text']:
-                    full_response += item
+                full_response = ' '.join(response['output_text'])
                 st.write(full_response)
-        message = {"role": "assistant", "content": full_response}
-        st.session_state.messages.append(message)
-
+                st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 if __name__ == "__main__":
     main()
-
