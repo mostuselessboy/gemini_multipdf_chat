@@ -27,7 +27,7 @@ def get_random_sample():
         "Explain the concept of 'Glance' in the Delhi Police context."
     ]
     return random.choice(sample_inputs)
-sample_inputs = [
+sample_questions = [
     "What are the legal provisions related to cybercrimes?",
     "How can I report a crime in Delhi?",
     "What are the do's and don'ts during an emergency?",
@@ -202,7 +202,7 @@ def main():
             st.session_state.messages.append({"role": "user", "content": sample_questions[7]})
             with st.chat_message("user"):
                 st.write(sample_questions[7])
-                
+
     if prompt := st.chat_input():
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
