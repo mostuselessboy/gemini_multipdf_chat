@@ -138,8 +138,10 @@ def main():
 
     if st.button("Try asking '" + question1+"'"):
         st.session_state.messages.append({"role": "user", "content": question1})
-        with st.chat_message("user"):
-            st.write(question1)
+        st.session_state.chat_input = question1
+        # with st.chat_message("user"):
+        #     st.write(question1)
+
     # Chat input
     if prompt := st.chat_input():
         st.session_state.messages.append({"role": "user", "content": prompt})
