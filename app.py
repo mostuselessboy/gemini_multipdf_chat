@@ -130,17 +130,7 @@ def main():
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
     st.button('Clear Chat History', on_click=clear_chat_history)
-    if st.button("Sample Input 1"):
-        sample_input = get_random_sample()
-        st.session_state.messages.append({"role": "user", "content": sample_input})
-        with st.chat_message("user"):
-            st.write(sample_input)
-    
-    if st.button("Sample Input 2"):
-        sample_input = get_random_sample()
-        st.session_state.messages.append({"role": "user", "content": sample_input})
-        with st.chat_message("user"):
-            st.write(sample_input)
+
     # Initialize chat history if not already present
     if "messages" not in st.session_state.keys():
         st.session_state.messages = [
@@ -152,6 +142,21 @@ def main():
             st.write(message["content"])
 
     # Chat input
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Sample Input 1"):
+            sample_input = get_random_sample()
+            st.session_state.messages.append({"role": "user", "content": sample_input})
+            with st.chat_message("user"):
+                st.write(sample_input)
+
+    with col2:
+        if st.button("Sample Input 2"):
+            sample_input = get_random_sample()
+            st.session_state.messages.append({"role": "user", "content": sample_input})
+            with st.chat_message("user"):
+                st.write(sample_input)
+                
     if prompt := st.chat_input():
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
