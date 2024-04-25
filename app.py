@@ -16,11 +16,11 @@ genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
 # read all pdf files and return text
 def get_random_sample():
-    sample_inputs = [
+    sample_input = [
         "LoudSpeaker ki timings kya hai?",
         "How many Vehicles allowed for Convassing?"
     ]
-    return random.choice(sample_inputs)
+    return random.choice(sample_input)
 
 
 def get_pdf_text(pdf_docs):
