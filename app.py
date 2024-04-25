@@ -30,6 +30,11 @@ def get_text_chunks(text):
     chunks = splitter.split_text(text)
     return chunks  # list of strings
 
+def get_combined_context(prev_messages, current_question):
+    # Combine previous messages and current question to create a combined context
+    context = " ".join([message["content"] for message in prev_messages]) + " " + current_question
+    return context
+
 # get embeddings for each chunk
 def get_vector_store(chunks):
     embeddings = GoogleGenerativeAIEmbeddings(
@@ -82,12 +87,15 @@ def clear_chat_history():
     st.session_state.messages = [
         {"role": "assistant", "content": "upload some pdfs and ask me a question"}]
 
-def user_input(user_question):
+def user_input(prev_messages, user_question):
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001")  # type: ignore
 
+    # Combine previous messages and current question to create a combined context
+    combined_context = get_combined_context(prev_messages, user_question)
+    
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) 
-    docs = new_db.similarity_search(user_question)
+    docs = new_db.similarity_search(combined_context)
 
     chain = get_conversational_chain()
 
@@ -144,7 +152,7 @@ def main():
     if st.session_state.messages and st.session_state.messages[-1]["role"] == "user" and prompt:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                response = user_input(prompt)
+                response = user_input(st.session_state.messages, prompt)
                 st.write(response)
         message = {"role": "assistant", "content": response}
         st.session_state.messages.append(message)
