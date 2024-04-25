@@ -27,7 +27,16 @@ def get_random_sample():
         "Explain the concept of 'Glance' in the Delhi Police context."
     ]
     return random.choice(sample_inputs)
-
+    sample_inputs = [
+        "What are the legal provisions related to cybercrimes?",
+        "How can I report a crime in Delhi?",
+        "What are the do's and don'ts during an emergency?",
+        "Tell me about the South District of Delhi.",
+        "How does the Delhi Police handle cases of defacement?",
+        "What is forced deployment in the context of Delhi Police?",
+        "Tell me about the latest e-campaign by Delhi Police.",
+        "Explain the concept of 'Glance' in the Delhi Police context."
+    ]
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -144,16 +153,55 @@ def main():
     # Chat input
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Sample Input 1"):
-            sample_input = get_random_sample()
+        if st.button(sample_questions[0]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[0]})
             with st.chat_message("user"):
-                st.write(sample_input)
+                st.write(sample_questions[0])
 
     with col2:
-        if st.button("Sample Input 2"):
-            sample_input = get_random_sample()
+        if st.button(sample_questions[1]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[1]})
             with st.chat_message("user"):
-                st.write(sample_input)
+                st.write(sample_questions[1])
+
+    col3, col4 = st.columns(2)
+    with col3:
+        if st.button(sample_questions[2]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[2]})
+            with st.chat_message("user"):
+                st.write(sample_questions[2])
+
+    with col4:
+        if st.button(sample_questions[3]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[3]})
+            with st.chat_message("user"):
+                st.write(sample_questions[3])
+
+    col5, col6 = st.columns(2)
+    with col5:
+        if st.button(sample_questions[4]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[4]})
+            with st.chat_message("user"):
+                st.write(sample_questions[4])
+
+    with col6:
+        if st.button(sample_questions[5]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[5]})
+            with st.chat_message("user"):
+                st.write(sample_questions[5])
+
+    col7, col8 = st.columns(2)
+    with col7:
+        if st.button(sample_questions[6]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[6]})
+            with st.chat_message("user"):
+                st.write(sample_questions[6])
+
+    with col8:
+        if st.button(sample_questions[7]):
+            st.session_state.messages.append({"role": "user", "content": sample_questions[7]})
+            with st.chat_message("user"):
+                st.write(sample_questions[7])
                 
     if prompt := st.chat_input():
         st.session_state.messages.append({"role": "user", "content": prompt})
