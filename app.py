@@ -27,16 +27,16 @@ def get_random_sample():
         "Explain the concept of 'Glance' in the Delhi Police context."
     ]
     return random.choice(sample_inputs)
-    sample_inputs = [
-        "What are the legal provisions related to cybercrimes?",
-        "How can I report a crime in Delhi?",
-        "What are the do's and don'ts during an emergency?",
-        "Tell me about the South District of Delhi.",
-        "How does the Delhi Police handle cases of defacement?",
-        "What is forced deployment in the context of Delhi Police?",
-        "Tell me about the latest e-campaign by Delhi Police.",
-        "Explain the concept of 'Glance' in the Delhi Police context."
-    ]
+sample_inputs = [
+    "What are the legal provisions related to cybercrimes?",
+    "How can I report a crime in Delhi?",
+    "What are the do's and don'ts during an emergency?",
+    "Tell me about the South District of Delhi.",
+    "How does the Delhi Police handle cases of defacement?",
+    "What is forced deployment in the context of Delhi Police?",
+    "Tell me about the latest e-campaign by Delhi Police.",
+    "Explain the concept of 'Glance' in the Delhi Police context."
+]
 
 def get_pdf_text(pdf_docs):
     text = ""
