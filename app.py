@@ -143,12 +143,12 @@ def main():
     # Display bot response
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                response = user_input(prompt)
-                full_response = ''
-                for item in response['output_text']:
-                    full_response += item
-                st.write(full_response)
+            # with st.spinner("Thinking..."):
+            response = user_input(prompt)
+            full_response = ''
+            for item in response['output_text']:
+                full_response += item
+            st.write(full_response)
         message = {"role": "assistant", "content": full_response}
         st.session_state.messages.append(message)
 
