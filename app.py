@@ -50,7 +50,7 @@ def get_conversational_chain():
     provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer. \n\n
     Context:\n {context}?\n
     Question: \n{question}\n
-
+    Similar Question:
     Answer:
     """
 
