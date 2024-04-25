@@ -90,6 +90,10 @@ def user_input(user_question):
         return {'output_text':["AI Cannot Answer these type of Questions for Safety Reason"]}
     print(response)
     return response
+st.set_page_config(
+    page_title="Delhi Police Bot",
+    page_icon="🤖"
+)
 
 pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
 with st.spinner("Processing..."):
@@ -97,10 +101,6 @@ with st.spinner("Processing..."):
     text_chunks = get_text_chunks(raw_text)
     get_vector_store(text_chunks)
 def main():
-    st.set_page_config(
-        page_title="Delhi Police Bot",
-        page_icon="🤖"
-    )
 
 
     hide_st_style = """
