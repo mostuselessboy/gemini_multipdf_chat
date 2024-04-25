@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 
 # read all pdf files and return text
+
+
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
@@ -24,39 +26,23 @@ def get_pdf_text(pdf_docs):
     return text
 
 # split text into chunks
+
+
 def get_text_chunks(text):
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=10000, chunk_overlap=1000)
     chunks = splitter.split_text(text)
     return chunks  # list of strings
 
-def get_combined_context(prev_messages, current_question):
-    # Combine previous messages and current question to create a combined context
-    context = " ".join([message["content"] for message in prev_messages]) + " " + current_question
-    return context
-
 # get embeddings for each chunk
+
+
 def get_vector_store(chunks):
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001")  # type: ignore
     vector_store = FAISS.from_texts(chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
-# Global variables for storing text chunks and embeddings
-TEXT_CHUNKS = None
-VECTOR_STORE = None
-
-def load_pdf_data():
-    global TEXT_CHUNKS, VECTOR_STORE
-
-    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
-    raw_text = get_pdf_text(pdf_docs)
-    text_chunks = get_text_chunks(raw_text)
-    get_vector_store(text_chunks)
-
-    # Store text chunks and vector store globally
-    TEXT_CHUNKS = text_chunks
-    VECTOR_STORE = FAISS.load_local("faiss_index", allow_dangerous_deserialization=True)
 
 def get_conversational_chain():
     prompt_template = """
@@ -64,7 +50,6 @@ def get_conversational_chain():
     provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer. \n\n
     Context:\n {context}?\n
     Question: \n{question}\n
-    Similar Question:
     Answer:
     """
 
@@ -83,19 +68,18 @@ def get_conversational_chain():
     chain = load_qa_chain(llm=model, chain_type="stuff", prompt=prompt)
     return chain
 
+
 def clear_chat_history():
     st.session_state.messages = [
         {"role": "assistant", "content": "upload some pdfs and ask me a question"}]
 
-def user_input(prev_messages, user_question):
+
+def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(
         model="models/embedding-001")  # type: ignore
 
-    # Combine previous messages and current question to create a combined context
-    combined_context = get_combined_context(prev_messages, user_question)
-    
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True) 
-    docs = new_db.similarity_search(combined_context)
+    docs = new_db.similarity_search(user_question)
 
     chain = get_conversational_chain()
 
@@ -104,19 +88,16 @@ def user_input(prev_messages, user_question):
             {"input_documents": docs, "question": user_question}, return_only_outputs=True, )
     except Exception:
         return {'output_text':["AI Cannot Answer these type of Questions for Safety Reason"]}
-    
-    full_response = ''
-    for item in response['output_text']:
-        full_response += item
-    return full_response
+    print(response)
+    return response
+
 
 def main():
-    load_pdf_data()
-
     st.set_page_config(
         page_title="Delhi Police Bot",
         page_icon="🤖"
     )
+
 
     hide_st_style = """
                 <style>
@@ -127,6 +108,17 @@ def main():
                 </style>
                 """
     st.markdown(hide_st_style, unsafe_allow_html=True)
+
+
+    # Use default PDF file "maindata.pdf"
+    pdf_docs = ["southdistricteng.pdf","legalprovision.pdf", "doanddont.pdf", "glance.pdf", "forcedepl.pdf", "defacement.pdf"]
+    with st.spinner("Processing..."):
+        raw_text = get_pdf_text(pdf_docs)
+        text_chunks = get_text_chunks(raw_text)
+        get_vector_store(text_chunks)
+
+    # Main content area for displaying chat messages
+    # st.image("botheader.png", caption="", use_column_width=True)
 
     st.title("👮Delhi Police ChatBot💬")
     st.write("दिल्ली पुलिस आपकी सेवा में 🙏")
@@ -149,13 +141,18 @@ def main():
             st.write(prompt)
 
     # Display bot response
-    if st.session_state.messages and st.session_state.messages[-1]["role"] == "user" and prompt:
+    if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                response = user_input(st.session_state.messages, prompt)
-                st.write(response)
-        message = {"role": "assistant", "content": response}
+                response = user_input(prompt)
+                full_response = ''
+                for item in response['output_text']:
+                    full_response += item
+                st.write(full_response)
+        message = {"role": "assistant", "content": full_response}
         st.session_state.messages.append(message)
+
 
 if __name__ == "__main__":
     main()
+
