@@ -17,14 +17,8 @@ genai.configure(api_key="AIzaSyAuo39Tdn6eWUYBcpXhM3LRTn67ycVqbx0")
 # read all pdf files and return text
 def get_random_sample():
     sample_inputs = [
-        "What are the legal provisions related to cybercrimes?",
-        "How can I report a crime in Delhi?",
-        "What are the do's and don'ts during an emergency?",
-        "Tell me about the South District of Delhi.",
-        "How does the Delhi Police handle cases of defacement?",
-        "What is forced deployment in the context of Delhi Police?",
-        "Tell me about the latest e-campaign by Delhi Police.",
-        "Explain the concept of 'Glance' in the Delhi Police context."
+        "LoudSpeaker ki timings kya hai?",
+        "How many Vehicles allowed for Convassing?"
     ]
     return random.choice(sample_inputs)
 
