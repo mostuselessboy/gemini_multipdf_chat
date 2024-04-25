@@ -32,8 +32,7 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the context ONLY like a help desk person.
-    If the answer is not in provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer! PREFER THAT ANSWER IN CONTEXT THAT COMES FIRST! \n\n
+    The Question is always asked from the given context only, Find the most perfect matching answer for the given question\n
     Context:\n {context}?\n
     Question: \n{question}\n
     Answer:
