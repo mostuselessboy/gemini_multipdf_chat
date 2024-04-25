@@ -142,7 +142,7 @@ def main():
             st.write(prompt)
 
     # Display bot response
-    if st.session_state.messages[-1]["role"] != "assistant":
+    if st.session_state.messages and st.session_state.messages[-1]["role"] == "user" and prompt:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 response = user_input(prompt)
@@ -152,7 +152,6 @@ def main():
                 st.write(full_response)
         message = {"role": "assistant", "content": full_response}
         st.session_state.messages.append(message)
-
 
 if __name__ == "__main__":
     main()
