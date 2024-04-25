@@ -46,8 +46,8 @@ def get_vector_store(chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question from the context in points by rephrasing it , dont provide the answer as it is. GIVE ANSWER ONLY IN POINTS LEAVING A LINE BETWEEN EACH POINTS!, if the answer is not in
-    provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer. \n\n
+    Answer the question from the context in points by rephrasing it. GIVE ANSWER ONLY IN POINTS LEAVING A LINE BETWEEN EACH POINTS!, if the answer is not in
+    provided context just say, "Please be more concise with your question🙏", don't provide the wrong answer.If answer not found then suggest them a similar question that is available in the context. \n\n
     Context:\n {context}?\n
     Question: \n{question}\n
     Answer:
@@ -55,7 +55,7 @@ def get_conversational_chain():
 
     model = ChatGoogleGenerativeAI(model="gemini-pro",
                                    client=genai,
-                                   temperature=1, 
+                                   temperature=0.8, 
                                     safety_settings={
                                     genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
                                     genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
