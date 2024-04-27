@@ -103,7 +103,7 @@ def main():
     if st.session_state.messages[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                pdf_docs = ["glance.pdf","ecampaign.pdf","southdistricteng.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf", "mcc.pdf]
+                pdf_docs = ["glance.pdf","ecampaign.pdf","southdistricteng.pdf", "legalprovision.pdf", "doanddont.pdf", "forcedepl.pdf", "defacement.pdf", "mcc.pdf"]
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
